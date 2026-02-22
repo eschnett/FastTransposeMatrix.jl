@@ -3,7 +3,7 @@ module TransposeMatrix
 using SIMD
 
 export transpose2x2!
-function transpose2x2!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
+function transpose2x2!(B::AbstractMatrix{UInt8}, A::AbstractMatrix{UInt8})
     @assert size(A) == (2, 2)
     @assert size(B) == (2, 2)
     @assert stride(A, 1) == 1
@@ -24,7 +24,7 @@ function transpose2x2!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
 end
 
 export transpose4x4!
-function transpose4x4!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
+function transpose4x4!(B::AbstractMatrix{UInt8}, A::AbstractMatrix{UInt8})
     @assert size(A) == (4, 4)
     @assert size(B) == (4, 4)
     @assert stride(A, 1) == 1
@@ -56,7 +56,7 @@ function transpose4x4!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
 end
 
 export transpose8x8!
-function transpose8x8!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
+function transpose8x8!(B::AbstractMatrix{UInt8}, A::AbstractMatrix{UInt8})
     @assert size(A) == (8, 8)
     @assert size(B) == (8, 8)
     @assert stride(A, 1) == 1
@@ -113,7 +113,7 @@ function transpose8x8!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
 end
 
 export transpose16x16!
-function transpose16x16!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
+function transpose16x16!(B::AbstractMatrix{UInt8}, A::AbstractMatrix{UInt8})
     @assert size(A) == (16, 16)
     @assert size(B) == (16, 16)
     @assert stride(A, 1) == 1
@@ -355,7 +355,7 @@ function transpose16x16!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
 end
 
 export transposeNxN!
-@generated function transposeNxN!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8}, ::Val{N}) where {N}
+@generated function transposeNxN!(B::AbstractMatrix{UInt8}, A::AbstractMatrix{UInt8}, ::Val{N}) where {N}
     N::Integer
     @assert ispow2(N)
 
@@ -428,9 +428,23 @@ export transposeNxN!
         @inbounds begin
             $(stmts...)
         end
+        return B
     end
 
     return body
+end
+
+export transpose!
+function transpose!(B::AbstractMatrix{UInt8}, A::AbstractMatrix{UInt8}, ::Val{N}) where {N}
+    n = size(A, 1)
+    @assert n % N == 0
+    @assert size(A) == size(B) == (n, n)
+
+    for j in 1:N:n, i in 1:N:n
+        transposeNxN!(view(B, i:i+N-1, j:j+N-1), view(A, j:j+N-1, i:i+N-1), Val(N))
+    end
+
+    return B
 end
 
 end
