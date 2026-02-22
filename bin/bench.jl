@@ -1,5 +1,5 @@
 using BenchmarkTools
-using TransposeMatrix
+using FastTransposeMatrix
 
 n = 1024
 

@@ -1,9 +1,9 @@
-# TransposeMatrix.jl
+# FastTransposeMatrix.jl
 
 Transpose matrices in memory efficiently via SIMD instructions. This
 can be about ten times faster than calling `permutedims!`.
 
-[![CI](https://github.com/eschnett/MatrixTranspose.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/eschnett/MatrixTranspose.jl/actions/workflows/CI.yml)
+[![CI](https://github.com/eschnett/FastTransposeMatrix.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/eschnett/FastTransposeMatrix.jl/actions/workflows/CI.yml)
 
 ## General Remark
 
@@ -23,7 +23,7 @@ be even greater.
 ## How to use it
 
 ```julia
-using TransposeMatrix
+using FastTransposeMatrix
 
 n = 1024
 A = rand(UInt8, n, n);
@@ -51,7 +51,7 @@ sizes via the script `bin/bench.jl`, which uses
 [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl).
 
 We compare the median times. (Smaller times are better.) In this case,
-`TransposeMatrix` is roughly ten times faster.
+`FastTransposeMatrix` is roughly ten times faster.
 
 ### Apple M3 Pro
 

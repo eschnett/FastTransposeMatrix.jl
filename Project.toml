@@ -1,4 +1,4 @@
-name = "TransposeMatrix"
+name = "FastTransposeMatrix"
 uuid = "1a2a01d2-c044-4ae4-8de1-e8ffaa2b5b19"
 version = "0.1.0"
 authors = ["Erik Schnetter <schnetter@gmail.com>"]

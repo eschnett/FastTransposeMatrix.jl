@@ -1,5 +1,5 @@
+using FastTransposeMatrix
 using Test
-using TransposeMatrix
 
 @testset "transpose2x2!" begin
     A = reshape(UInt8.(0:(2 ^ 2 - 1)), (2, 2))
