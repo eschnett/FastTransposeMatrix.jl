@@ -3,6 +3,8 @@
 Transpose matrices in memory efficiently via SIMD instructions. This
 can be about ten times faster than calling `permutedims!`.
 
+[![CI](https://github.com/eschnett/MatrixTranspose.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/eschnett/MatrixTranspose.jl/actions/workflows/CI.yml)
+
 ## General Remark
 
 In general, transposing a matrix in memory should be

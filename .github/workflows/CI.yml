@@ -31,6 +31,7 @@ jobs:
           - arch: "x64"
             os: "ubuntu-24.04"
             version: "1.11"
+          # Julia 1.10 segfaults in LLVM
           # - arch: "x64"
           #   os: "ubuntu-24.04"
           #   version: "1.10"
