@@ -3,7 +3,8 @@ using FastTransposeMatrix
 
 n = 1024
 
-A = rand(UInt8, n, n);
+T = UInt8
+A = rand(T, n, n);
 B = similar(A);
 
 @benchmark permutedims!(B, A, (2, 1))

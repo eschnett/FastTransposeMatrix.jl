@@ -36,12 +36,11 @@ The last argument (`Val(16)`) chooses the block size used in the
 transpose algorithm. A block size between 16 and 64 works generally
 well. Swmaller block sizes are usually less efficient. The block size
 needs to be a power of 2, and it needs to divide the matrix size
-evenly. Block sizes larger than the cache line size (usually 64 Bytes
-on a CPU) do not make sense performance-wise.
+evenly. The product of the block size and the element type size (in
+bytes) does probably not be larger than the cache line size (usually
+64 Bytes on a CPU).
 
-The matrices need to have element type `UInt8`. Other one-byte element
-types can be transposed by using `reinterpret`. Higher-dimensional
-arrays can be transposed by using `reshape`.
+Higher-dimensional arrays can be transposed by using `reshape`.
 
 ## Benchmark results
 
@@ -59,15 +58,17 @@ We compare the median times. (Smaller times are better.) In this case,
 - CPU: 12 × Apple M3 Pro
 - LLVM: libLLVM-18.1.7 (ORCJIT, apple-m3)
 
-|     Block size | Median time |
-|----------------|-------------|
-| `permutedims!` |  560.375 μs |
-|              2 | 1082.000 μs |
-|              4 |  353.542 μs |
-|              8 |  144.167 μs |
-|             16 |   64.417 μs |
-|             32 |   68.875 μs |
-|             64 |   85.708 μs |
+|   Element type |     `UInt8`   |     `UInt32`   |
+|----------------|---------------|----------------|
+|     Block size | Median time   |  Median time   |
+|----------------|---------------|----------------|
+| `permutedims!` |  560.375 μs   |   781.917 μs   |
+|              2 | 1082.000 μs   |  1113.000 μs   |
+|              4 |  353.542 μs   |   379.291 μs   |
+|              8 |  144.167 μs   | **198.042 μs **|
+|             16 | **64.417 μs** |   209.250 μs   |
+|             32 |   68.875 μs   |   238.791 μs   |
+|             64 |   85.708 μs   |   213.834 μs   |
 
 
 ### Intel Xeon Gold
