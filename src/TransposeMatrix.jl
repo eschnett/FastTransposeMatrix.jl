@@ -361,56 +361,47 @@ export transposeNxN!
 
     stmts = []
 
-    push!(stmts, quote
-        @boundscheck begin
-            size(A) == ($N, $N) || throw(DimensionMismatch("Matrix A does not have size ($N,$N)"))
-            size(B) == ($N, $N) || throw(DimensionMismatch("Matrix B does not have size ($N,$N)"))
-            stride(A, 1) == 1 || throw(ArgumentError("Matrix A does not have stride 1 for its first dimension"))
-            stride(B, 1) == 1 || throw(ArgumentError("Matrix A does not have stride 1 for its first dimension"))
-        end
-    end)
-
-    wave = 0
+    step = 0
 
     # Load
     for n in 0:(N - 1)
-        an = Symbol(:r, string(wave), :l, string(n))
+        an = Symbol(:r, string(step), :l, string(n))
         push!(stmts, :($an = vload(Vec{$N,UInt8}, view(A, :, $(n+1)), 1)))
     end
 
     blocksize = N÷2
-    while blocksize > 1
-        wave += 1
+    while blocksize >= 1
+        step += 1
 
         for n1 in 0:(2 * blocksize):(N - 1)
             vals = Int[]
-            for m1 in 0:(2 * blocksize):(2N - 1)
+            for m1 in 0:(2 * blocksize):(N - 1)
                 for m in m1:(m1 + blocksize - 1)
                     push!(vals, m)
                 end
                 for m in m1:(m1 + blocksize - 1)
-                    push!(vals, m+2*blocksize)
+                    push!(vals, m+N)
                 end
             end
             for n in n1:(n1 + blocksize - 1)
-                anlo = Symbol(:r, string(wave-1), :l, string(n))
-                anhi = Symbol(:r, string(wave-1), :l, string(n+blocksize))
-                bn = Symbol(:r, string(wave), :l, string(n))
+                anlo = Symbol(:r, string(step-1), :l, string(n))
+                anhi = Symbol(:r, string(step-1), :l, string(n+blocksize))
+                bn = Symbol(:r, string(step), :l, string(n))
                 push!(stmts, :($bn = shufflevector($anlo, $anhi, Val(tuple($(vals...))))))
             end
             vals = Int[]
-            for m1 in 0:(2 * blocksize):(2N - 1)
+            for m1 in 0:(2 * blocksize):(N - 1)
                 for m in m1:(m1 + blocksize - 1)
                     push!(vals, m+blocksize)
                 end
                 for m in m1:(m1 + blocksize - 1)
-                    push!(vals, m+3*blocksize)
+                    push!(vals, m+N+blocksize)
                 end
             end
             for n in n1:(n1 + blocksize - 1)
-                anlo = Symbol(:r, string(wave-1), :l, string(n))
-                anhi = Symbol(:r, string(wave-1), :l, string(n+blocksize))
-                bn = Symbol(:r, string(wave), :l, string(n+blocksize))
+                anlo = Symbol(:r, string(step-1), :l, string(n))
+                anhi = Symbol(:r, string(step-1), :l, string(n+blocksize))
+                bn = Symbol(:r, string(step), :l, string(n+blocksize))
                 push!(stmts, :($bn = shufflevector($anlo, $anhi, Val(tuple($(vals...))))))
             end
         end
@@ -420,7 +411,7 @@ export transposeNxN!
 
     # Store
     for n in 0:(N - 1)
-        an = Symbol(:r, string(wave), :l, string(n))
+        an = Symbol(:r, string(step), :l, string(n))
         push!(stmts, :(vstore($an, view(B, :, $(n+1)), 1)))
     end
 
@@ -428,6 +419,12 @@ export transposeNxN!
     push!(stmts, :(return nothing))
 
     body = quote
+        @boundscheck begin
+            size(A) == ($N, $N) || throw(DimensionMismatch("Matrix A does not have size ($N,$N)"))
+            size(B) == ($N, $N) || throw(DimensionMismatch("Matrix B does not have size ($N,$N)"))
+            stride(A, 1) == 1 || throw(ArgumentError("Matrix A does not have stride 1 for its first dimension"))
+            stride(B, 1) == 1 || throw(ArgumentError("Matrix A does not have stride 1 for its first dimension"))
+        end
         @inbounds begin
             $(stmts...)
         end

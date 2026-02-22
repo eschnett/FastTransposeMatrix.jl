@@ -29,7 +29,7 @@ end
     @test B == permutedims(A)
 end
 
-@testset "transposeNxN!" for N in [2, 4, 8, 16, 32, 64]
+@testset "transposeNxN! (N=$N)" for N in [2, 4, 8, 16, 32, 64]
     A = rand(UInt8, N, N)
     B = similar(A)
     transposeNxN!(B, A, Val(N))
