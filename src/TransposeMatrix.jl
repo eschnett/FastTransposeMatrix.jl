@@ -10,14 +10,14 @@ function transpose2x2!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
     @assert stride(B, 1) == 1
 
     @inbounds begin
-        a0 = vload(Vec{2,UInt8}, view(A, :, 1), 1)
-        a1 = vload(Vec{2,UInt8}, view(A, :, 2), 1)
+        a0 = vloada(Vec{2,UInt8}, view(A, :, 1), 1)
+        a1 = vloada(Vec{2,UInt8}, view(A, :, 2), 1)
 
         b0 = shufflevector(a0, a1, Val((0, 2)))
         b1 = shufflevector(a0, a1, Val((1, 3)))
 
-        vstore(b0, view(B, :, 1), 1)
-        vstore(b1, view(B, :, 2), 1)
+        vstorea(b0, view(B, :, 1), 1)
+        vstorea(b1, view(B, :, 2), 1)
     end
 
     nothing
@@ -31,10 +31,10 @@ function transpose4x4!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
     @assert stride(B, 1) == 1
 
     @inbounds begin
-        a0 = vload(Vec{4,UInt8}, view(A, :, 1), 1)
-        a1 = vload(Vec{4,UInt8}, view(A, :, 2), 1)
-        a2 = vload(Vec{4,UInt8}, view(A, :, 3), 1)
-        a3 = vload(Vec{4,UInt8}, view(A, :, 4), 1)
+        a0 = vloada(Vec{4,UInt8}, view(A, :, 1), 1)
+        a1 = vloada(Vec{4,UInt8}, view(A, :, 2), 1)
+        a2 = vloada(Vec{4,UInt8}, view(A, :, 3), 1)
+        a3 = vloada(Vec{4,UInt8}, view(A, :, 4), 1)
 
         b0 = shufflevector(a0, a2, Val((0, 1, 4, 5)))
         b1 = shufflevector(a1, a3, Val((0, 1, 4, 5)))
@@ -46,10 +46,10 @@ function transpose4x4!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
         c2 = shufflevector(b2, b3, Val((0, 4, 2, 6)))
         c3 = shufflevector(b2, b3, Val((1, 5, 3, 7)))
 
-        vstore(c0, view(B, :, 1), 1)
-        vstore(c1, view(B, :, 2), 1)
-        vstore(c2, view(B, :, 3), 1)
-        vstore(c3, view(B, :, 4), 1)
+        vstorea(c0, view(B, :, 1), 1)
+        vstorea(c1, view(B, :, 2), 1)
+        vstorea(c2, view(B, :, 3), 1)
+        vstorea(c3, view(B, :, 4), 1)
     end
 
     nothing
@@ -63,14 +63,14 @@ function transpose8x8!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
     @assert stride(B, 1) == 1
 
     @inbounds begin
-        a0 = vload(Vec{8,UInt8}, view(A, :, 0x0 + 0x1), 0x1)
-        a1 = vload(Vec{8,UInt8}, view(A, :, 0x1 + 0x1), 0x1)
-        a2 = vload(Vec{8,UInt8}, view(A, :, 0x2 + 0x1), 0x1)
-        a3 = vload(Vec{8,UInt8}, view(A, :, 0x3 + 0x1), 0x1)
-        a4 = vload(Vec{8,UInt8}, view(A, :, 0x4 + 0x1), 0x1)
-        a5 = vload(Vec{8,UInt8}, view(A, :, 0x5 + 0x1), 0x1)
-        a6 = vload(Vec{8,UInt8}, view(A, :, 0x6 + 0x1), 0x1)
-        a7 = vload(Vec{8,UInt8}, view(A, :, 0x7 + 0x1), 0x1)
+        a0 = vloada(Vec{8,UInt8}, view(A, :, 0x0 + 0x1), 0x1)
+        a1 = vloada(Vec{8,UInt8}, view(A, :, 0x1 + 0x1), 0x1)
+        a2 = vloada(Vec{8,UInt8}, view(A, :, 0x2 + 0x1), 0x1)
+        a3 = vloada(Vec{8,UInt8}, view(A, :, 0x3 + 0x1), 0x1)
+        a4 = vloada(Vec{8,UInt8}, view(A, :, 0x4 + 0x1), 0x1)
+        a5 = vloada(Vec{8,UInt8}, view(A, :, 0x5 + 0x1), 0x1)
+        a6 = vloada(Vec{8,UInt8}, view(A, :, 0x6 + 0x1), 0x1)
+        a7 = vloada(Vec{8,UInt8}, view(A, :, 0x7 + 0x1), 0x1)
 
         b0 = shufflevector(a0, a4, Val((0x0, 0x1, 0x2, 0x3, 0x8, 0x9, 0xa, 0xb)))
         b1 = shufflevector(a1, a5, Val((0x0, 0x1, 0x2, 0x3, 0x8, 0x9, 0xa, 0xb)))
@@ -99,14 +99,14 @@ function transpose8x8!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
         d6 = shufflevector(c6, c7, Val((0x0, 0x8, 0x2, 0xa, 0x4, 0xc, 0x6, 0xe)))
         d7 = shufflevector(c6, c7, Val((0x1, 0x9, 0x3, 0xb, 0x5, 0xd, 0x7, 0xf)))
 
-        vstore(d0, view(B, :, 0x0 + 0x1), 0x1)
-        vstore(d1, view(B, :, 0x1 + 0x1), 0x1)
-        vstore(d2, view(B, :, 0x2 + 0x1), 0x1)
-        vstore(d3, view(B, :, 0x3 + 0x1), 0x1)
-        vstore(d4, view(B, :, 0x4 + 0x1), 0x1)
-        vstore(d5, view(B, :, 0x5 + 0x1), 0x1)
-        vstore(d6, view(B, :, 0x6 + 0x1), 0x1)
-        vstore(d7, view(B, :, 0x7 + 0x1), 0x1)
+        vstorea(d0, view(B, :, 0x0 + 0x1), 0x1)
+        vstorea(d1, view(B, :, 0x1 + 0x1), 0x1)
+        vstorea(d2, view(B, :, 0x2 + 0x1), 0x1)
+        vstorea(d3, view(B, :, 0x3 + 0x1), 0x1)
+        vstorea(d4, view(B, :, 0x4 + 0x1), 0x1)
+        vstorea(d5, view(B, :, 0x5 + 0x1), 0x1)
+        vstorea(d6, view(B, :, 0x6 + 0x1), 0x1)
+        vstorea(d7, view(B, :, 0x7 + 0x1), 0x1)
     end
 
     nothing
@@ -120,22 +120,22 @@ function transpose16x16!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
     @assert stride(B, 1) == 1
 
     @inbounds begin
-        a0 = vload(Vec{16,UInt8}, view(A, :, 0x0 + 0x1), 0x1)
-        a1 = vload(Vec{16,UInt8}, view(A, :, 0x1 + 0x1), 0x1)
-        a2 = vload(Vec{16,UInt8}, view(A, :, 0x2 + 0x1), 0x1)
-        a3 = vload(Vec{16,UInt8}, view(A, :, 0x3 + 0x1), 0x1)
-        a4 = vload(Vec{16,UInt8}, view(A, :, 0x4 + 0x1), 0x1)
-        a5 = vload(Vec{16,UInt8}, view(A, :, 0x5 + 0x1), 0x1)
-        a6 = vload(Vec{16,UInt8}, view(A, :, 0x6 + 0x1), 0x1)
-        a7 = vload(Vec{16,UInt8}, view(A, :, 0x7 + 0x1), 0x1)
-        a8 = vload(Vec{16,UInt8}, view(A, :, 0x8 + 0x1), 0x1)
-        a9 = vload(Vec{16,UInt8}, view(A, :, 0x9 + 0x1), 0x1)
-        aa = vload(Vec{16,UInt8}, view(A, :, 0xa + 0x1), 0x1)
-        ab = vload(Vec{16,UInt8}, view(A, :, 0xb + 0x1), 0x1)
-        ac = vload(Vec{16,UInt8}, view(A, :, 0xc + 0x1), 0x1)
-        ad = vload(Vec{16,UInt8}, view(A, :, 0xd + 0x1), 0x1)
-        ae = vload(Vec{16,UInt8}, view(A, :, 0xe + 0x1), 0x1)
-        af = vload(Vec{16,UInt8}, view(A, :, 0xf + 0x1), 0x1)
+        a0 = vloada(Vec{16,UInt8}, view(A, :, 0x0 + 0x1), 0x1)
+        a1 = vloada(Vec{16,UInt8}, view(A, :, 0x1 + 0x1), 0x1)
+        a2 = vloada(Vec{16,UInt8}, view(A, :, 0x2 + 0x1), 0x1)
+        a3 = vloada(Vec{16,UInt8}, view(A, :, 0x3 + 0x1), 0x1)
+        a4 = vloada(Vec{16,UInt8}, view(A, :, 0x4 + 0x1), 0x1)
+        a5 = vloada(Vec{16,UInt8}, view(A, :, 0x5 + 0x1), 0x1)
+        a6 = vloada(Vec{16,UInt8}, view(A, :, 0x6 + 0x1), 0x1)
+        a7 = vloada(Vec{16,UInt8}, view(A, :, 0x7 + 0x1), 0x1)
+        a8 = vloada(Vec{16,UInt8}, view(A, :, 0x8 + 0x1), 0x1)
+        a9 = vloada(Vec{16,UInt8}, view(A, :, 0x9 + 0x1), 0x1)
+        aa = vloada(Vec{16,UInt8}, view(A, :, 0xa + 0x1), 0x1)
+        ab = vloada(Vec{16,UInt8}, view(A, :, 0xb + 0x1), 0x1)
+        ac = vloada(Vec{16,UInt8}, view(A, :, 0xc + 0x1), 0x1)
+        ad = vloada(Vec{16,UInt8}, view(A, :, 0xd + 0x1), 0x1)
+        ae = vloada(Vec{16,UInt8}, view(A, :, 0xe + 0x1), 0x1)
+        af = vloada(Vec{16,UInt8}, view(A, :, 0xf + 0x1), 0x1)
 
         b0 = shufflevector(
             a0, a8, Val((0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17))
@@ -333,22 +333,22 @@ function transpose16x16!(B::DenseMatrix{UInt8}, A::DenseMatrix{UInt8})
             de, df, Val((0x01, 0x11, 0x03, 0x13, 0x05, 0x15, 0x07, 0x17, 0x09, 0x19, 0x0b, 0x1b, 0x0d, 0x1d, 0x0f, 0x1f))
         )
 
-        vstore(e0, view(B, :, 0x0 + 0x1), 0x1)
-        vstore(e1, view(B, :, 0x1 + 0x1), 0x1)
-        vstore(e2, view(B, :, 0x2 + 0x1), 0x1)
-        vstore(e3, view(B, :, 0x3 + 0x1), 0x1)
-        vstore(e4, view(B, :, 0x4 + 0x1), 0x1)
-        vstore(e5, view(B, :, 0x5 + 0x1), 0x1)
-        vstore(e6, view(B, :, 0x6 + 0x1), 0x1)
-        vstore(e7, view(B, :, 0x7 + 0x1), 0x1)
-        vstore(e8, view(B, :, 0x8 + 0x1), 0x1)
-        vstore(e9, view(B, :, 0x9 + 0x1), 0x1)
-        vstore(ea, view(B, :, 0xa + 0x1), 0x1)
-        vstore(eb, view(B, :, 0xb + 0x1), 0x1)
-        vstore(ec, view(B, :, 0xc + 0x1), 0x1)
-        vstore(ed, view(B, :, 0xd + 0x1), 0x1)
-        vstore(ee, view(B, :, 0xe + 0x1), 0x1)
-        vstore(ef, view(B, :, 0xf + 0x1), 0x1)
+        vstorea(e0, view(B, :, 0x0 + 0x1), 0x1)
+        vstorea(e1, view(B, :, 0x1 + 0x1), 0x1)
+        vstorea(e2, view(B, :, 0x2 + 0x1), 0x1)
+        vstorea(e3, view(B, :, 0x3 + 0x1), 0x1)
+        vstorea(e4, view(B, :, 0x4 + 0x1), 0x1)
+        vstorea(e5, view(B, :, 0x5 + 0x1), 0x1)
+        vstorea(e6, view(B, :, 0x6 + 0x1), 0x1)
+        vstorea(e7, view(B, :, 0x7 + 0x1), 0x1)
+        vstorea(e8, view(B, :, 0x8 + 0x1), 0x1)
+        vstorea(e9, view(B, :, 0x9 + 0x1), 0x1)
+        vstorea(ea, view(B, :, 0xa + 0x1), 0x1)
+        vstorea(eb, view(B, :, 0xb + 0x1), 0x1)
+        vstorea(ec, view(B, :, 0xc + 0x1), 0x1)
+        vstorea(ed, view(B, :, 0xd + 0x1), 0x1)
+        vstorea(ee, view(B, :, 0xe + 0x1), 0x1)
+        vstorea(ef, view(B, :, 0xf + 0x1), 0x1)
     end
 
     nothing
@@ -366,7 +366,7 @@ export transposeNxN!
     # Load
     for n in 0:(N - 1)
         an = Symbol(:r, string(step), :l, string(n))
-        push!(stmts, :($an = vload(Vec{$N,UInt8}, view(A, :, $(n+1)), 1)))
+        push!(stmts, :($an = vloada(Vec{$N,UInt8}, view(A, :, $(n+1)), 1)))
     end
 
     blocksize = N÷2
@@ -412,7 +412,7 @@ export transposeNxN!
     # Store
     for n in 0:(N - 1)
         an = Symbol(:r, string(step), :l, string(n))
-        push!(stmts, :(vstore($an, view(B, :, $(n+1)), 1)))
+        push!(stmts, :(vstorea($an, view(B, :, $(n+1)), 1)))
     end
 
     # Return
