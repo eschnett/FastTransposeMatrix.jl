@@ -36,9 +36,7 @@ The last argument (`Val(16)`) chooses the block size used in the
 transpose algorithm. A block size between 16 and 64 works generally
 well. Swmaller block sizes are usually less efficient. The block size
 needs to be a power of 2, and it needs to divide the matrix size
-evenly. The product of the block size and the element type size (in
-bytes) does probably not be larger than the cache line size (usually
-64 Bytes on a CPU).
+evenly.
 
 Higher-dimensional arrays can be transposed by using `reshape`.
 
@@ -58,17 +56,17 @@ We compare the median times. (Smaller times are better.) In this case,
 - CPU: 12 × Apple M3 Pro
 - LLVM: libLLVM-18.1.7 (ORCJIT, apple-m3)
 
-|   Element type |     `UInt8`   |     `UInt32`   |
-|----------------|---------------|----------------|
-|     Block size | Median time   |  Median time   |
-|----------------|---------------|----------------|
-| `permutedims!` |  560.375 μs   |   781.917 μs   |
-|              2 | 1082.000 μs   |  1113.000 μs   |
-|              4 |  353.542 μs   |   379.291 μs   |
-|              8 |  144.167 μs   | **198.042 μs **|
-|             16 | **64.417 μs** |   209.250 μs   |
-|             32 |   68.875 μs   |   238.791 μs   |
-|             64 |   85.708 μs   |   213.834 μs   |
+|   Element type |     `UInt8`   |     `UInt32`  |
+|----------------|---------------|---------------|
+|     Block size | Median time   |  Median time  |
+|----------------|---------------|---------------|
+| `permutedims!` |  560.375 μs   |   781.917 μs  |
+|              2 | 1082.000 μs   |  1113.000 μs  |
+|              4 |  353.542 μs   |   379.291 μs  |
+|              8 |  144.167 μs   | **198.042 μs**|
+|             16 | **64.417 μs** |   209.250 μs  |
+|             32 |   68.875 μs   |   238.791 μs  |
+|             64 |   85.708 μs   |   213.834 μs  |
 
 
 ### Intel Xeon Gold
@@ -77,12 +75,14 @@ We compare the median times. (Smaller times are better.) In this case,
 - WORD_SIZE: 64
 - LLVM: libLLVM-18.1.7 (ORCJIT, sapphirerapids)
 
-|     Block size | Median time |
-|----------------|-------------|
-| `permutedims!` |  948.053 μs |
-|              2 | 1457.000 μs |
-|              4 |  479.790 μs |
-|              8 |  195.489 μs |
-|             16 |  153.323 μs |
-|             32 |   98.965 μs |
-|             64 |   85.390 μs |
+|   Element type |     `UInt8`   |     `UInt32`   |
+|----------------|---------------|----------------|
+|     Block size | Median time   |  Median time   |
+|----------------|---------------|----------------|
+| `permutedims!` |  948.053 μs   |  3766.000 μs   |
+|              2 | 1457.000 μs   |  2738.000 μs   |
+|              4 |  479.790 μs   |  1049.000 μs   |
+|              8 |  195.489 μs   |   589.208 μs   |
+|             16 |  153.323 μs   |   456.843 μs   |
+|             32 |   98.965 μs   | **428.710 μs** |
+|             64 | **85.390 μs** |   537.207 μs   |
