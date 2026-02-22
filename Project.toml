@@ -8,3 +8,4 @@ SIMD = "fdea26ae-647d-5447-a871-4b548cad5224"
 
 [compat]
 SIMD = "3.7.2"
+julia = "1.11"
