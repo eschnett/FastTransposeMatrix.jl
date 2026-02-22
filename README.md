@@ -57,7 +57,6 @@ We compare the median times. (Smaller times are better.) In this case,
 - LLVM: libLLVM-18.1.7 (ORCJIT, apple-m3)
 
 |   Element type |     `UInt8`   |     `UInt32`  |
-|----------------|---------------|---------------|
 |     Block size | Median time   |  Median time  |
 |----------------|---------------|---------------|
 | `permutedims!` |  560.375 μs   |   781.917 μs  |
@@ -76,7 +75,6 @@ We compare the median times. (Smaller times are better.) In this case,
 - LLVM: libLLVM-18.1.7 (ORCJIT, sapphirerapids)
 
 |   Element type |     `UInt8`   |     `UInt32`   |
-|----------------|---------------|----------------|
 |     Block size | Median time   |  Median time   |
 |----------------|---------------|----------------|
 | `permutedims!` |  948.053 μs   |  3766.000 μs   |
